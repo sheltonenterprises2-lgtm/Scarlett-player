@@ -1,432 +1,178 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Princess Kids Player</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>Scarlett Player</title>
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 
   <style>
-    /* ========= PRINCESS THEME (copy/paste replaces your current root) ========= */
     :root{
-      --bg1: #2a0f45;
-      --bg2: #160826;
-
-      --panel: rgba(255,182,230,0.18);
-      --panelStrong: rgba(255,160,220,0.28);
-
-      --text: rgba(255,255,255,0.96);
-      --muted: rgba(255,230,245,0.82);
-
-      --stroke: rgba(255,190,240,0.35);
-      --focus: rgba(255,210,255,0.65);
-
-      --shadow: 0 22px 60px rgba(80,0,120,0.55);
-      --radius: 20px;
+      --bg:#0b0f19;--panel:#121a2a;--panel2:#0f1625;
+      --text:#eef2ff;--muted:#aab3c5;
+      --btn:#1d2a44;--btnHover:#253657;
+      --radius:18px;--danger:#ff6b6b
     }
-
-    *{ box-sizing: border-box; }
-    html,body{ height:100%; }
-
-    body{
-      margin:0;
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Apple Color Emoji","Segoe UI Emoji";
-      color: var(--text);
-      background:
-        radial-gradient(900px 600px at 15% 10%, rgba(255,170,235,0.55), transparent 60%),
-        radial-gradient(900px 600px at 85% 15%, rgba(200,150,255,0.55), transparent 60%),
-        radial-gradient(1000px 700px at 50% 90%, rgba(255,200,240,0.45), transparent 65%),
-        linear-gradient(180deg, var(--bg1), var(--bg2));
-      overflow: hidden; /* locked screen */
-    }
-
-    /* ========= APP SHELL ========= */
-    .app{
-      height: 100%;
-      display: grid;
-      grid-template-columns: 104px 1fr; /* pinned left taskbar + main */
-      gap: 16px;
-      padding: 16px;
-    }
-
-    /* ========= PINNED LEFT TASKBAR ========= */
-    .taskbar{
-      height: calc(100vh - 32px);
-      border-radius: var(--radius);
-      border: 1px solid var(--stroke);
-      background: linear-gradient(180deg, var(--panel), rgba(255,255,255,0.06));
-      box-shadow: var(--shadow);
-      overflow: hidden;
-
-      display: grid;
-      grid-template-rows: auto 1fr auto; /* header / buttons / footer */
-    }
-
-    .tb-header{
-      padding: 12px 10px 10px 10px;
-      border-bottom: 1px solid var(--stroke);
-      background: rgba(0,0,0,0.10);
-      backdrop-filter: blur(10px);
-      display: grid;
-      place-items: center;
-      gap: 6px;
-    }
-
-    .tb-badge{
-      width: 44px;
-      height: 44px;
-      border-radius: 14px;
-      display: grid;
-      place-items: center;
-      border: 1px solid var(--stroke);
-      background: linear-gradient(180deg, rgba(255,220,245,0.40), rgba(210,170,255,0.22));
-      font-size: 22px;
-      box-shadow: 0 10px 26px rgba(255,120,220,0.20);
-    }
-
-    .tb-title{
-      font-size: 11px;
-      letter-spacing: 0.3px;
-      text-transform: uppercase;
-      color: var(--muted);
-      font-weight: 800;
-      margin: 0;
-      text-align: center;
-    }
-
-    /* Buttons: ALL visible at once, no scroll */
-    .tb-buttons{
-      padding: 10px;
-      display: grid;
-      grid-template-rows: repeat(5, 1fr); /* 5 buttons */
-      gap: 10px;
-      overflow: hidden; /* ensure no scroll */
-    }
-
-    .tb-btn{
-      appearance: none;
-      border: 1px solid var(--stroke);
-      border-radius: 16px;
-      cursor: pointer;
-
-      display: grid;
-      place-items: center;
-      gap: 6px;
-
-      color: var(--text);
-      background: linear-gradient(180deg, rgba(255,210,240,0.42), rgba(255,170,230,0.18));
-      box-shadow: 0 10px 26px rgba(255,120,220,0.14);
-
-      user-select: none;
-      touch-action: manipulation;
-
-      padding: 8px 6px;
-    }
-
-    .tb-btn:hover{
-      box-shadow:
-        0 0 0 2px rgba(255,200,255,0.35),
-        0 14px 34px rgba(255,120,220,0.28);
-      border-color: rgba(255,220,255,0.75);
-    }
-
-    .tb-btn:active{ transform: scale(0.99); }
-
-    .tb-btn[aria-pressed="true"]{
-      background: linear-gradient(180deg, rgba(255,235,250,0.52), rgba(210,170,255,0.26));
-      border-color: rgba(255,235,255,0.85);
-      box-shadow:
-        0 0 0 2px rgba(255,210,255,0.55),
-        0 18px 40px rgba(170,90,255,0.22);
-    }
-
-    .tb-icon{
-      font-size: 22px;
-      line-height: 1;
-    }
-
-    .tb-label{
-      font-size: 11px;
-      font-weight: 900;
-      letter-spacing: 0.2px;
-      color: rgba(255,255,255,0.92);
-      text-align: center;
-    }
-
-    .tb-footer{
-      padding: 10px;
-      border-top: 1px solid var(--stroke);
-      background: rgba(0,0,0,0.08);
-      display: grid;
-      gap: 8px;
-    }
-
-    .pill{
-      appearance: none;
-      border: 1px solid var(--stroke);
-      background: rgba(255,255,255,0.08);
-      color: var(--text);
-      padding: 10px 10px;
-      border-radius: 999px;
-      font-weight: 900;
-      cursor: pointer;
-      user-select: none;
-      touch-action: manipulation;
-      font-size: 12px;
-    }
-    .pill:hover{
-      border-color: rgba(255,235,255,0.85);
-      background: rgba(255,255,255,0.12);
-    }
-
-    /* ========= MAIN PLAYER AREA ========= */
-    .main{
-      height: calc(100vh - 32px);
-      border-radius: var(--radius);
-      border: 1px solid var(--stroke);
-      background: linear-gradient(180deg, var(--panel), rgba(255,255,255,0.05));
-      box-shadow: var(--shadow);
-      overflow: hidden;
-      display: grid;
-      grid-template-rows: auto 1fr;
-    }
-
-    .topbar{
-      padding: 14px 16px;
-      border-bottom: 1px solid var(--stroke);
-      background: rgba(0,0,0,0.10);
-      backdrop-filter: blur(10px);
-
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-    }
-
-    .now{
-      display:flex;
-      flex-direction: column;
-      gap: 4px;
-      min-width: 0;
-    }
-    .now .k{
-      font-size: 12px;
-      color: var(--muted);
-      font-weight: 800;
-      letter-spacing: 0.2px;
-    }
-    .now .v{
-      font-size: 15px;
-      font-weight: 900;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      max-width: 70vw;
-    }
-
-    .mini-controls{
-      display:flex;
-      gap: 10px;
-      align-items:center;
-      flex-shrink: 0;
-    }
-
-    .player-wrap{
-      position: relative;
-      padding: 16px;
-      height: 100%;
-      display: grid;
-      place-items: center;
-    }
-
-    .player-frame{
-      width: min(1120px, 100%);
-      aspect-ratio: 16 / 9;
-      border-radius: 20px;
-      overflow: hidden;
-      border: 1px solid var(--stroke);
-      background: rgba(0,0,0,0.35);
-      position: relative;
-      box-shadow: 0 18px 55px rgba(0,0,0,0.45);
-    }
-
-    .overlay{
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      background:
-        radial-gradient(300px 220px at 20% 18%, rgba(255,255,255,0.24), transparent 60%),
-        radial-gradient(320px 240px at 78% 25%, rgba(255,210,255,0.18), transparent 65%),
-        linear-gradient(180deg, rgba(255,170,235,0.16), rgba(120,60,200,0.24));
-      opacity: 0.58;
-    }
-
-    /* Mobile: taskbar becomes top row (still no scrolling for 5 buttons) */
-    @media (max-width: 860px){
-      .app{
-        grid-template-columns: 1fr;
-        grid-template-rows: auto 1fr;
-      }
-      .taskbar{
-        height: auto;
-        grid-template-rows: auto auto auto;
-      }
-      .tb-buttons{
-        grid-template-columns: repeat(5, 1fr);
-        grid-template-rows: 1fr;
-      }
-      .tb-label{ display:none; } /* cleaner on small screens */
-      .main{
-        height: calc(100vh - 32px - 190px);
-      }
-    }
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;background:var(--bg);color:var(--text)}
+    .wrap{min-height:100%;display:grid;grid-template-rows:auto 1fr auto;padding:14px;gap:12px;max-width:1100px;margin:0 auto}
+    header{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;border-radius:var(--radius);
+      background:linear-gradient(180deg,rgba(122,162,255,.18),rgba(122,162,255,.04));border:1px solid rgba(255,255,255,.08)}
+    .title strong{font-size:16px}.title span{font-size:12px;color:var(--muted)}
+    button{border:1px solid rgba(255,255,255,.1);background:var(--btn);color:var(--text);
+      padding:10px 12px;border-radius:14px;font-weight:650;cursor:pointer}
+    button:hover{background:var(--btnHover)}
+    button.secondary{background:transparent;color:var(--muted)}
+    button.danger{background:rgba(255,107,107,.12);border-color:rgba(255,107,107,.35)}
+    main{display:grid;grid-template-columns:340px 1fr;gap:12px}
+    .menu{background:var(--panel);border-radius:var(--radius);padding:12px;display:grid;gap:10px;align-content:start}
+    .tile{padding:16px;border-radius:18px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);text-align:left}
+    .tile strong{font-size:16px}.tile span{font-size:12px;color:var(--muted);display:block;margin-top:6px}
+    .player{background:var(--panel2);border-radius:var(--radius);overflow:hidden;display:grid;grid-template-rows:auto 1fr}
+    .now{padding:12px;border-bottom:1px solid rgba(255,255,255,.08)}
+    .frameWrap{position:relative;width:100%;height:100%;min-height:360px}
+    #player{position:absolute;inset:0;width:100%;height:100%;background:#000}
+    footer{font-size:12px;color:var(--muted);padding-bottom:8px}
+    @media(max-width:900px){main{grid-template-columns:1fr}}
   </style>
 </head>
-
 <body>
-  <div class="app">
 
-    <!-- Pinned Left Taskbar -->
-    <aside class="taskbar">
-      <div class="tb-header">
-        <div class="tb-badge">👑</div>
-        <p class="tb-title">Princess Player</p>
+<div class="wrap">
+  <header>
+    <div class="title">
+      <strong>Scarlett Player</strong>
+      <span>Buttons only · auto-restart for single videos</span>
+    </div>
+    <div>
+      <button class="secondary" onclick="goHome()">Home</button>
+      <button class="danger" onclick="stopPlayback()">Stop</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="menu" id="buttons"></section>
+
+    <section class="player">
+      <div class="now">
+        <strong id="nowTitle">Choose a category</strong><br>
+        <span id="nowSub" style="color:var(--muted);font-size:12px">Buttons on the left</span>
       </div>
-
-      <div class="tb-buttons" id="buttons"></div>
-
-      <div class="tb-footer">
-        <button class="pill" id="btnHome">Home</button>
+      <div class="frameWrap">
+        <!-- YouTube API mounts the player into this div -->
+        <div id="player"></div>
       </div>
-    </aside>
+    </section>
+  </main>
 
-    <!-- Main Player -->
-    <main class="main">
-      <div class="topbar">
-        <div class="now">
-          <div class="k">Now playing</div>
-          <div class="v" id="nowPlaying">Select a category</div>
-        </div>
+  <footer>
+    iPad setup: Add to Home Screen → Guided Access → triple-click side button
+  </footer>
+</div>
 
-        <div class="mini-controls">
-          <button class="pill" id="btnPause">Pause</button>
-          <button class="pill" id="btnPlay">Play</button>
-        </div>
-      </div>
+<script>
+/**
+ * CONTENT CONFIG
+ * - Animals = playlist
+ * - All others = single video with auto-restart on end
+ */
+const CONTENT = [
+  { label:"Animals",  subtitle:"Animal videos", type:"playlist", id:"PLNxd9fYeqXea4N3q7_Au1eovEWdQj1KJK" },
+  { label:"Kids Bop", subtitle:"Kids music",    type:"video",    id:"yzUKlvhlsyI" },
+  { label:"Lullabies",subtitle:"Sleep & calm",  type:"video",    id:"Ddf6UKyxDwo" },
+  { label:"Music",    subtitle:"Approved music",type:"video",    id:"d8S4VuWPYto" },
+  { label:"ASMR",     subtitle:"Calm sensory",  type:"video",    id:"f63gAuLHnBo" }
+];
 
-      <div class="player-wrap">
-        <div class="player-frame">
-          <div id="player"></div>
-          <div class="overlay"></div>
-        </div>
-      </div>
-    </main>
+const buttonsEl = document.getElementById("buttons");
+const nowTitle = document.getElementById("nowTitle");
+const nowSub = document.getElementById("nowSub");
 
-  </div>
+let player = null;
+let currentItem = null;
 
-  <!-- YouTube IFrame API -->
-  <script src="https://www.youtube.com/iframe_api"></script>
+// Build the button UI
+CONTENT.forEach(item => {
+  const btn = document.createElement("button");
+  btn.className = "tile";
+  btn.innerHTML = `<strong>${item.label}</strong><span>${item.subtitle}</span>`;
+  btn.onclick = () => loadItem(item);
+  buttonsEl.appendChild(btn);
+});
 
-  <script>
-    // === Buttons & Content ===
-    // Animals is a playlist ID; others are single video IDs from your links.
-    const CONTENT = [
-      { key: "animals",  label: "Animals",   icon: "🦄", type: "playlist", id: "PLNxd9fYeqXea4N3q7_Au1eovEWdQj1KJK" },
-      { key: "kidsbop",  label: "Kids Bop",  icon: "🎀", type: "video",    id: "yzUKlvhlsyI" },
-      { key: "lullabies",label: "Lullabies", icon: "🌙", type: "video",    id: "Ddf6UKyxDwo" },
-      { key: "music",    label: "Music",     icon: "🎵", type: "video",    id: "d8S4VuWPYto" },
-      { key: "asmr",     label: "ASMR",      icon: "✨", type: "video",    id: "f63gAuLHnBo" }
-    ];
+// Load the YouTube IFrame API
+const tag = document.createElement('script');
+tag.src = "https://www.youtube.com/iframe_api";
+document.head.appendChild(tag);
 
-    let player = null;
-    let activeKey = null;
-
-    const nowPlayingEl = document.getElementById("nowPlaying");
-    const buttonsEl = document.getElementById("buttons");
-
-    function setNowPlaying(text){ nowPlayingEl.textContent = text; }
-
-    function renderButtons(){
-      buttonsEl.innerHTML = "";
-      CONTENT.forEach(item => {
-        const btn = document.createElement("button");
-        btn.className = "tb-btn";
-        btn.type = "button";
-        btn.dataset.key = item.key;
-        btn.setAttribute("aria-pressed", "false");
-
-        const icon = document.createElement("div");
-        icon.className = "tb-icon";
-        icon.textContent = item.icon;
-
-        const label = document.createElement("div");
-        label.className = "tb-label";
-        label.textContent = item.label;
-
-        btn.appendChild(icon);
-        btn.appendChild(label);
-
-        btn.addEventListener("click", () => loadItem(item.key));
-        buttonsEl.appendChild(btn);
-      });
+// Called by the YouTube API when it's ready
+window.onYouTubeIframeAPIReady = () => {
+  player = new YT.Player('player', {
+    width: '100%',
+    height: '100%',
+    videoId: '', // start empty
+    playerVars: {
+      autoplay: 1,
+      playsinline: 1,
+      rel: 0,
+      modestbranding: 1,
+      // These reduce UI but YouTube ultimately controls what is shown.
+      controls: 1
+    },
+    events: {
+      onStateChange: onPlayerStateChange
     }
+  });
+};
 
-    function markActive(key){
-      activeKey = key;
-      [...buttonsEl.querySelectorAll(".tb-btn")].forEach(b => {
-        const on = b.dataset.key === key;
-        b.setAttribute("aria-pressed", on ? "true" : "false");
-      });
+function loadItem(item){
+  currentItem = item;
+  nowTitle.textContent = item.label;
+  nowSub.textContent = item.subtitle;
+
+  if (!player || typeof player.loadVideoById !== "function") {
+    // API not ready yet; retry shortly
+    setTimeout(() => loadItem(item), 200);
+    return;
+  }
+
+  if (item.type === "playlist") {
+    // Start playlist (Animals)
+    player.loadPlaylist({ listType: "playlist", list: item.id, index: 0, startSeconds: 0 });
+  } else {
+    // Single video
+    player.loadVideoById({ videoId: item.id, startSeconds: 0 });
+  }
+}
+
+// Auto-restart logic: when a single video ends, restart it
+function onPlayerStateChange(event){
+  if (!currentItem) return;
+
+  // YT.PlayerState.ENDED === 0
+  if (event.data === YT.PlayerState.ENDED) {
+    if (currentItem.type === "video") {
+      // restart from beginning
+      player.seekTo(0, true);
+      player.playVideo();
     }
+    // For playlists, we do nothing (playlist continues naturally)
+  }
+}
 
-    function loadItem(key){
-      const item = CONTENT.find(x => x.key === key);
-      if(!item || !player) return;
+function goHome(){
+  nowTitle.textContent = "Choose a category";
+  nowSub.textContent = "Buttons on the left";
+}
 
-      markActive(key);
-      setNowPlaying(item.label);
+function stopPlayback(){
+  currentItem = null;
+  nowTitle.textContent = "Stopped";
+  nowSub.textContent = "Select a button to play";
+  if (player && typeof player.stopVideo === "function") player.stopVideo();
+}
+</script>
 
-      if(item.type === "playlist"){
-        player.loadPlaylist({
-          listType: "playlist",
-          list: item.id,
-          index: 0
-        });
-      } else {
-        player.loadVideoById(item.id);
-      }
-    }
-
-    function onYouTubeIframeAPIReady(){
-      renderButtons();
-
-      player = new YT.Player("player", {
-        width: "100%",
-        height: "100%",
-        playerVars: {
-          autoplay: 0,
-          controls: 1,
-          modestbranding: 1,
-          rel: 0,
-          fs: 0,
-          iv_load_policy: 3,
-          disablekb: 1,
-          playsinline: 1
-        },
-        events: {
-          onReady: () => setNowPlaying("Select a category")
-        }
-      });
-    }
-    window.onYouTubeIframeAPIReady = onYouTubeIframeAPIReady;
-
-    // Controls
-    document.getElementById("btnPause").addEventListener("click", () => player && player.pauseVideo());
-    document.getElementById("btnPlay").addEventListener("click", () => player && player.playVideo());
-    document.getElementById("btnHome").addEventListener("click", () => {
-      markActive(null);
-      setNowPlaying("Select a category");
-      if(player) player.stopVideo();
-    });
-  </script>
 </body>
 </html>
