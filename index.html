@@ -1,178 +1,427 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <title>Scarlett Player</title>
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Kids Player (Playlist Only)</title>
 
   <style>
     :root{
-      --bg:#0b0f19;--panel:#121a2a;--panel2:#0f1625;
-      --text:#eef2ff;--muted:#aab3c5;
-      --btn:#1d2a44;--btnHover:#253657;
-      --radius:18px;--danger:#ff6b6b
+      --bg: #0b0f17;
+      --panel: rgba(255,255,255,0.06);
+      --panel2: rgba(255,255,255,0.10);
+      --text: rgba(255,255,255,0.92);
+      --muted: rgba(255,255,255,0.65);
+      --stroke: rgba(255,255,255,0.12);
+      --focus: rgba(255,255,255,0.20);
+      --shadow: 0 18px 50px rgba(0,0,0,0.55);
+      --radius: 18px;
     }
-    *{box-sizing:border-box}
-    html,body{height:100%;margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;background:var(--bg);color:var(--text)}
-    .wrap{min-height:100%;display:grid;grid-template-rows:auto 1fr auto;padding:14px;gap:12px;max-width:1100px;margin:0 auto}
-    header{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;border-radius:var(--radius);
-      background:linear-gradient(180deg,rgba(122,162,255,.18),rgba(122,162,255,.04));border:1px solid rgba(255,255,255,.08)}
-    .title strong{font-size:16px}.title span{font-size:12px;color:var(--muted)}
-    button{border:1px solid rgba(255,255,255,.1);background:var(--btn);color:var(--text);
-      padding:10px 12px;border-radius:14px;font-weight:650;cursor:pointer}
-    button:hover{background:var(--btnHover)}
-    button.secondary{background:transparent;color:var(--muted)}
-    button.danger{background:rgba(255,107,107,.12);border-color:rgba(255,107,107,.35)}
-    main{display:grid;grid-template-columns:340px 1fr;gap:12px}
-    .menu{background:var(--panel);border-radius:var(--radius);padding:12px;display:grid;gap:10px;align-content:start}
-    .tile{padding:16px;border-radius:18px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);text-align:left}
-    .tile strong{font-size:16px}.tile span{font-size:12px;color:var(--muted);display:block;margin-top:6px}
-    .player{background:var(--panel2);border-radius:var(--radius);overflow:hidden;display:grid;grid-template-rows:auto 1fr}
-    .now{padding:12px;border-bottom:1px solid rgba(255,255,255,.08)}
-    .frameWrap{position:relative;width:100%;height:100%;min-height:360px}
-    #player{position:absolute;inset:0;width:100%;height:100%;background:#000}
-    footer{font-size:12px;color:var(--muted);padding-bottom:8px}
-    @media(max-width:900px){main{grid-template-columns:1fr}}
+
+    *{ box-sizing: border-box; }
+    html,body{ height:100%; }
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      color: var(--text);
+      background:
+        radial-gradient(1100px 700px at 20% 10%, rgba(78,125,255,0.25), transparent 55%),
+        radial-gradient(900px 600px at 85% 20%, rgba(255,120,200,0.18), transparent 60%),
+        radial-gradient(900px 700px at 60% 90%, rgba(80,255,190,0.12), transparent 60%),
+        var(--bg);
+      overflow: hidden; /* lock screen: no body scrolling */
+    }
+
+    /* App shell: fixed sidebar + fixed main player area */
+    .app{
+      height: 100%;
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 16px;
+      padding: 16px;
+    }
+
+    /* Sidebar (locked) */
+    .sidebar{
+      position: relative;
+      height: calc(100vh - 32px);
+      border: 1px solid var(--stroke);
+      background: linear-gradient(180deg, var(--panel), rgba(255,255,255,0.04));
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .sidebar-header{
+      padding: 16px 16px 10px 16px;
+      border-bottom: 1px solid var(--stroke);
+      background: rgba(0,0,0,0.12);
+      backdrop-filter: blur(10px);
+    }
+    .title{
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: 0.2px;
+      margin: 0;
+    }
+    .subtitle{
+      margin: 6px 0 0 0;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .btns{
+      padding: 12px;
+      display: grid;
+      gap: 10px;
+      overflow: auto; /* if you add more buttons later */
+    }
+
+    .btn{
+      appearance: none;
+      border: 1px solid var(--stroke);
+      background: rgba(255,255,255,0.06);
+      color: var(--text);
+      padding: 14px 12px;
+      border-radius: 14px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transition: transform .08s ease, background .12s ease, border-color .12s ease;
+      user-select: none;
+      touch-action: manipulation;
+    }
+    .btn:hover{ background: rgba(255,255,255,0.10); border-color: var(--focus); }
+    .btn:active{ transform: scale(0.99); }
+    .btn[aria-pressed="true"]{
+      background: rgba(255,255,255,0.14);
+      border-color: rgba(255,255,255,0.24);
+    }
+
+    .icon{
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      background: rgba(255,255,255,0.10);
+      border: 1px solid var(--stroke);
+      font-size: 20px;
+    }
+
+    /* Main area (locked player + overlay) */
+    .main{
+      height: calc(100vh - 32px);
+      border-radius: var(--radius);
+      border: 1px solid var(--stroke);
+      background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.04));
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      position: relative;
+      display: grid;
+      grid-template-rows: auto 1fr;
+    }
+
+    .topbar{
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--stroke);
+      background: rgba(0,0,0,0.12);
+      backdrop-filter: blur(10px);
+    }
+
+    .nowplaying{
+      display:flex;
+      flex-direction: column;
+      gap: 4px;
+      min-width: 0;
+    }
+    .nowplaying .label{
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .nowplaying .value{
+      font-size: 14px;
+      font-weight: 700;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 70vw;
+    }
+
+    .controls{
+      display:flex;
+      gap: 10px;
+      align-items:center;
+      flex-shrink: 0;
+    }
+
+    .pill{
+      border: 1px solid var(--stroke);
+      background: rgba(255,255,255,0.06);
+      color: var(--text);
+      padding: 10px 12px;
+      border-radius: 999px;
+      font-weight: 700;
+      cursor: pointer;
+      user-select: none;
+      touch-action: manipulation;
+    }
+    .pill:hover{ background: rgba(255,255,255,0.10); border-color: var(--focus); }
+
+    /* Player box: keeps 16:9 and fills remaining space */
+    .player-wrap{
+      position: relative;
+      padding: 16px;
+      height: 100%;
+      display: grid;
+      place-items: center;
+    }
+
+    .player-frame{
+      width: min(1120px, 100%);
+      aspect-ratio: 16 / 9;
+      border-radius: 18px;
+      overflow: hidden;
+      border: 1px solid var(--stroke);
+      background: rgba(0,0,0,0.35);
+      position: relative;
+    }
+
+    /* Overlay (clean) */
+    .overlay{
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background:
+        radial-gradient(600px 300px at 20% 10%, rgba(255,255,255,0.10), transparent 55%),
+        radial-gradient(700px 400px at 80% 15%, rgba(255,255,255,0.06), transparent 60%),
+        linear-gradient(180deg, rgba(0,0,0,0.25), rgba(0,0,0,0.35));
+      opacity: 0.30;
+      mix-blend-mode: screen;
+    }
+
+    /* Mobile: sidebar becomes top row */
+    @media (max-width: 860px){
+      body{ overflow: hidden; }
+      .app{
+        grid-template-columns: 1fr;
+        grid-template-rows: auto 1fr;
+      }
+      .sidebar{
+        height: auto;
+      }
+      .btns{
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .main{
+        height: calc(100vh - 32px - 210px);
+      }
+    }
   </style>
 </head>
+
 <body>
-
-<div class="wrap">
-  <header>
-    <div class="title">
-      <strong>Scarlett Player</strong>
-      <span>Buttons only · auto-restart for single videos</span>
-    </div>
-    <div>
-      <button class="secondary" onclick="goHome()">Home</button>
-      <button class="danger" onclick="stopPlayback()">Stop</button>
-    </div>
-  </header>
-
-  <main>
-    <section class="menu" id="buttons"></section>
-
-    <section class="player">
-      <div class="now">
-        <strong id="nowTitle">Choose a category</strong><br>
-        <span id="nowSub" style="color:var(--muted);font-size:12px">Buttons on the left</span>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <p class="title">Kids Player</p>
+        <p class="subtitle">Buttons are locked. Player is locked.</p>
       </div>
-      <div class="frameWrap">
-        <!-- YouTube API mounts the player into this div -->
-        <div id="player"></div>
+
+      <div class="btns" id="buttons"></div>
+    </aside>
+
+    <main class="main">
+      <div class="topbar">
+        <div class="nowplaying">
+          <div class="label">Now playing</div>
+          <div class="value" id="nowPlaying">Select a category</div>
+        </div>
+        <div class="controls">
+          <button class="pill" id="btnPause">Pause</button>
+          <button class="pill" id="btnPlay">Play</button>
+          <button class="pill" id="btnHome">Home</button>
+        </div>
       </div>
-    </section>
-  </main>
 
-  <footer>
-    iPad setup: Add to Home Screen → Guided Access → triple-click side button
-  </footer>
-</div>
+      <div class="player-wrap">
+        <div class="player-frame">
+          <div id="player"></div>
+          <div class="overlay"></div>
+        </div>
+      </div>
+    </main>
+  </div>
 
-<script>
-/**
- * CONTENT CONFIG
- * - Animals = playlist
- * - All others = single video with auto-restart on end
- */
-const CONTENT = [
-  { label:"Animals",  subtitle:"Animal videos", type:"playlist", id:"PLNxd9fYeqXea4N3q7_Au1eovEWdQj1KJK" },
-  { label:"Kids Bop", subtitle:"Kids music",    type:"video",    id:"yzUKlvhlsyI" },
-  { label:"Lullabies",subtitle:"Sleep & calm",  type:"video",    id:"Ddf6UKyxDwo" },
-  { label:"Music",    subtitle:"Approved music",type:"video",    id:"d8S4VuWPYto" },
-  { label:"ASMR",     subtitle:"Calm sensory",  type:"video",    id:"f63gAuLHnBo" }
-];
+  <!-- YouTube IFrame API -->
+  <script src="https://www.youtube.com/iframe_api"></script>
 
-const buttonsEl = document.getElementById("buttons");
-const nowTitle = document.getElementById("nowTitle");
-const nowSub = document.getElementById("nowSub");
+  <script>
+    // === Your buttons & content ===
+    // NOTE:
+    // - Animals is a playlist ID
+    // - The others are single videos (from your links)
+    const CONTENT = [
+      {
+        key: "animals",
+        label: "Animals",
+        icon: "🦁",
+        type: "playlist",
+        id: "PLNxd9fYeqXea4N3q7_Au1eovEWdQj1KJK"
+      },
+      {
+        key: "kidsbop",
+        label: "Kids Bop",
+        icon: "🎤",
+        type: "video",
+        id: "yzUKlvhlsyI"
+      },
+      {
+        key: "lullabies",
+        label: "Lullabies",
+        icon: "🌙",
+        type: "video",
+        id: "Ddf6UKyxDwo"
+      },
+      {
+        key: "music",
+        label: "Music",
+        icon: "🎵",
+        type: "video",
+        id: "d8S4VuWPYto"
+      },
+      {
+        key: "asmr",
+        label: "ASMR",
+        icon: "🤫",
+        type: "video",
+        id: "f63gAuLHnBo"
+      }
+    ];
 
-let player = null;
-let currentItem = null;
+    let player = null;
+    let activeKey = null;
 
-// Build the button UI
-CONTENT.forEach(item => {
-  const btn = document.createElement("button");
-  btn.className = "tile";
-  btn.innerHTML = `<strong>${item.label}</strong><span>${item.subtitle}</span>`;
-  btn.onclick = () => loadItem(item);
-  buttonsEl.appendChild(btn);
-});
+    const nowPlayingEl = document.getElementById("nowPlaying");
+    const buttonsEl = document.getElementById("buttons");
 
-// Load the YouTube IFrame API
-const tag = document.createElement('script');
-tag.src = "https://www.youtube.com/iframe_api";
-document.head.appendChild(tag);
-
-// Called by the YouTube API when it's ready
-window.onYouTubeIframeAPIReady = () => {
-  player = new YT.Player('player', {
-    width: '100%',
-    height: '100%',
-    videoId: '', // start empty
-    playerVars: {
-      autoplay: 1,
-      playsinline: 1,
-      rel: 0,
-      modestbranding: 1,
-      // These reduce UI but YouTube ultimately controls what is shown.
-      controls: 1
-    },
-    events: {
-      onStateChange: onPlayerStateChange
+    function setNowPlaying(text){
+      nowPlayingEl.textContent = text;
     }
-  });
-};
 
-function loadItem(item){
-  currentItem = item;
-  nowTitle.textContent = item.label;
-  nowSub.textContent = item.subtitle;
+    function renderButtons(){
+      buttonsEl.innerHTML = "";
+      CONTENT.forEach(item => {
+        const btn = document.createElement("button");
+        btn.className = "btn";
+        btn.type = "button";
+        btn.dataset.key = item.key;
+        btn.setAttribute("aria-pressed", "false");
 
-  if (!player || typeof player.loadVideoById !== "function") {
-    // API not ready yet; retry shortly
-    setTimeout(() => loadItem(item), 200);
-    return;
-  }
+        const icon = document.createElement("span");
+        icon.className = "icon";
+        icon.textContent = item.icon;
 
-  if (item.type === "playlist") {
-    // Start playlist (Animals)
-    player.loadPlaylist({ listType: "playlist", list: item.id, index: 0, startSeconds: 0 });
-  } else {
-    // Single video
-    player.loadVideoById({ videoId: item.id, startSeconds: 0 });
-  }
-}
+        const label = document.createElement("span");
+        label.textContent = item.label;
 
-// Auto-restart logic: when a single video ends, restart it
-function onPlayerStateChange(event){
-  if (!currentItem) return;
+        btn.appendChild(icon);
+        btn.appendChild(label);
 
-  // YT.PlayerState.ENDED === 0
-  if (event.data === YT.PlayerState.ENDED) {
-    if (currentItem.type === "video") {
-      // restart from beginning
-      player.seekTo(0, true);
-      player.playVideo();
+        btn.addEventListener("click", () => loadItem(item.key));
+        buttonsEl.appendChild(btn);
+      });
     }
-    // For playlists, we do nothing (playlist continues naturally)
-  }
-}
 
-function goHome(){
-  nowTitle.textContent = "Choose a category";
-  nowSub.textContent = "Buttons on the left";
-}
+    function markActive(key){
+      activeKey = key;
+      [...buttonsEl.querySelectorAll(".btn")].forEach(b => {
+        const on = b.dataset.key === key;
+        b.setAttribute("aria-pressed", on ? "true" : "false");
+      });
+    }
 
-function stopPlayback(){
-  currentItem = null;
-  nowTitle.textContent = "Stopped";
-  nowSub.textContent = "Select a button to play";
-  if (player && typeof player.stopVideo === "function") player.stopVideo();
-}
-</script>
+    function loadItem(key){
+      const item = CONTENT.find(x => x.key === key);
+      if(!item || !player) return;
 
+      markActive(key);
+      setNowPlaying(item.label);
+
+      // Safer embed options; still not a perfect “walled garden”
+      // due to YouTube platform behavior.
+      const common = {
+        autoplay: 1,
+        controls: 1,
+        modestbranding: 1,
+        rel: 0,
+        fs: 0,
+        iv_load_policy: 3,
+        disablekb: 1,
+        playsinline: 1
+      };
+
+      if(item.type === "playlist"){
+        player.loadPlaylist({
+          listType: "playlist",
+          list: item.id,
+          index: 0
+        });
+      } else {
+        player.loadVideoById(item.id);
+      }
+    }
+
+    // YouTube API callback
+    function onYouTubeIframeAPIReady(){
+      renderButtons();
+
+      player = new YT.Player("player", {
+        width: "100%",
+        height: "100%",
+        videoId: CONTENT[0].type === "video" ? CONTENT[0].id : undefined,
+        playerVars: {
+          autoplay: 0,
+          controls: 1,
+          modestbranding: 1,
+          rel: 0,
+          fs: 0,
+          iv_load_policy: 3,
+          disablekb: 1,
+          playsinline: 1
+        },
+        events: {
+          onReady: () => {
+            setNowPlaying("Select a category");
+          }
+        }
+      });
+    }
+
+    // Make callback global
+    window.onYouTubeIframeAPIReady = onYouTubeIframeAPIReady;
+
+    // Controls
+    document.getElementById("btnPause").addEventListener("click", () => {
+      if(player) player.pauseVideo();
+    });
+    document.getElementById("btnPlay").addEventListener("click", () => {
+      if(player) player.playVideo();
+    });
+    document.getElementById("btnHome").addEventListener("click", () => {
+      markActive(null);
+      setNowPlaying("Select a category");
+      if(player) player.stopVideo();
+    });
+  </script>
 </body>
 </html>
