@@ -3,176 +3,233 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Kids Player (Playlist Only)</title>
+  <title>Princess Kids Player</title>
 
   <style>
+    /* ========= PRINCESS THEME (copy/paste replaces your current root) ========= */
     :root{
-      --bg: #0b0f17;
-      --panel: rgba(255,255,255,0.06);
-      --panel2: rgba(255,255,255,0.10);
-      --text: rgba(255,255,255,0.92);
-      --muted: rgba(255,255,255,0.65);
-      --stroke: rgba(255,255,255,0.12);
-      --focus: rgba(255,255,255,0.20);
-      --shadow: 0 18px 50px rgba(0,0,0,0.55);
-      --radius: 18px;
+      --bg1: #2a0f45;
+      --bg2: #160826;
+
+      --panel: rgba(255,182,230,0.18);
+      --panelStrong: rgba(255,160,220,0.28);
+
+      --text: rgba(255,255,255,0.96);
+      --muted: rgba(255,230,245,0.82);
+
+      --stroke: rgba(255,190,240,0.35);
+      --focus: rgba(255,210,255,0.65);
+
+      --shadow: 0 22px 60px rgba(80,0,120,0.55);
+      --radius: 20px;
     }
 
     *{ box-sizing: border-box; }
     html,body{ height:100%; }
+
     body{
       margin:0;
       font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Apple Color Emoji","Segoe UI Emoji";
       color: var(--text);
       background:
-        radial-gradient(1100px 700px at 20% 10%, rgba(78,125,255,0.25), transparent 55%),
-        radial-gradient(900px 600px at 85% 20%, rgba(255,120,200,0.18), transparent 60%),
-        radial-gradient(900px 700px at 60% 90%, rgba(80,255,190,0.12), transparent 60%),
-        var(--bg);
-      overflow: hidden; /* lock screen: no body scrolling */
+        radial-gradient(900px 600px at 15% 10%, rgba(255,170,235,0.55), transparent 60%),
+        radial-gradient(900px 600px at 85% 15%, rgba(200,150,255,0.55), transparent 60%),
+        radial-gradient(1000px 700px at 50% 90%, rgba(255,200,240,0.45), transparent 65%),
+        linear-gradient(180deg, var(--bg1), var(--bg2));
+      overflow: hidden; /* locked screen */
     }
 
-    /* App shell: fixed sidebar + fixed main player area */
+    /* ========= APP SHELL ========= */
     .app{
       height: 100%;
       display: grid;
-      grid-template-columns: 280px 1fr;
+      grid-template-columns: 104px 1fr; /* pinned left taskbar + main */
       gap: 16px;
       padding: 16px;
     }
 
-    /* Sidebar (locked) */
-    .sidebar{
-      position: relative;
+    /* ========= PINNED LEFT TASKBAR ========= */
+    .taskbar{
       height: calc(100vh - 32px);
-      border: 1px solid var(--stroke);
-      background: linear-gradient(180deg, var(--panel), rgba(255,255,255,0.04));
       border-radius: var(--radius);
+      border: 1px solid var(--stroke);
+      background: linear-gradient(180deg, var(--panel), rgba(255,255,255,0.06));
       box-shadow: var(--shadow);
       overflow: hidden;
-      display: flex;
-      flex-direction: column;
+
+      display: grid;
+      grid-template-rows: auto 1fr auto; /* header / buttons / footer */
     }
 
-    .sidebar-header{
-      padding: 16px 16px 10px 16px;
+    .tb-header{
+      padding: 12px 10px 10px 10px;
       border-bottom: 1px solid var(--stroke);
-      background: rgba(0,0,0,0.12);
+      background: rgba(0,0,0,0.10);
       backdrop-filter: blur(10px);
-    }
-    .title{
-      font-size: 15px;
-      font-weight: 700;
-      letter-spacing: 0.2px;
-      margin: 0;
-    }
-    .subtitle{
-      margin: 6px 0 0 0;
-      font-size: 12px;
-      color: var(--muted);
-    }
-
-    .btns{
-  padding: 12px;
-  display: grid;
-  grid-template-rows: repeat(5, 1fr); /* one row per button */
-  gap: 10px;
-  height: 100%;
-  overflow: hidden; /* no scrolling */
-}
-
-    .btn{
-  appearance: none;
-  border: 1px solid var(--stroke);
-  background: rgba(255,255,255,0.06);
-  color: var(--text);
-  padding: 12px;
-  border-radius: 14px;
-  font-size: 15px;
-  font-weight: 700;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  height: 100%; /* fills its grid row */
-  transition: transform .08s ease, background .12s ease, border-color .12s ease;
-}
-
-    .icon{
-      width: 38px;
-      height: 38px;
-      border-radius: 12px;
       display: grid;
       place-items: center;
-      background: rgba(255,255,255,0.10);
-      border: 1px solid var(--stroke);
-      font-size: 20px;
+      gap: 6px;
     }
 
-    /* Main area (locked player + overlay) */
+    .tb-badge{
+      width: 44px;
+      height: 44px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      border: 1px solid var(--stroke);
+      background: linear-gradient(180deg, rgba(255,220,245,0.40), rgba(210,170,255,0.22));
+      font-size: 22px;
+      box-shadow: 0 10px 26px rgba(255,120,220,0.20);
+    }
+
+    .tb-title{
+      font-size: 11px;
+      letter-spacing: 0.3px;
+      text-transform: uppercase;
+      color: var(--muted);
+      font-weight: 800;
+      margin: 0;
+      text-align: center;
+    }
+
+    /* Buttons: ALL visible at once, no scroll */
+    .tb-buttons{
+      padding: 10px;
+      display: grid;
+      grid-template-rows: repeat(5, 1fr); /* 5 buttons */
+      gap: 10px;
+      overflow: hidden; /* ensure no scroll */
+    }
+
+    .tb-btn{
+      appearance: none;
+      border: 1px solid var(--stroke);
+      border-radius: 16px;
+      cursor: pointer;
+
+      display: grid;
+      place-items: center;
+      gap: 6px;
+
+      color: var(--text);
+      background: linear-gradient(180deg, rgba(255,210,240,0.42), rgba(255,170,230,0.18));
+      box-shadow: 0 10px 26px rgba(255,120,220,0.14);
+
+      user-select: none;
+      touch-action: manipulation;
+
+      padding: 8px 6px;
+    }
+
+    .tb-btn:hover{
+      box-shadow:
+        0 0 0 2px rgba(255,200,255,0.35),
+        0 14px 34px rgba(255,120,220,0.28);
+      border-color: rgba(255,220,255,0.75);
+    }
+
+    .tb-btn:active{ transform: scale(0.99); }
+
+    .tb-btn[aria-pressed="true"]{
+      background: linear-gradient(180deg, rgba(255,235,250,0.52), rgba(210,170,255,0.26));
+      border-color: rgba(255,235,255,0.85);
+      box-shadow:
+        0 0 0 2px rgba(255,210,255,0.55),
+        0 18px 40px rgba(170,90,255,0.22);
+    }
+
+    .tb-icon{
+      font-size: 22px;
+      line-height: 1;
+    }
+
+    .tb-label{
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: 0.2px;
+      color: rgba(255,255,255,0.92);
+      text-align: center;
+    }
+
+    .tb-footer{
+      padding: 10px;
+      border-top: 1px solid var(--stroke);
+      background: rgba(0,0,0,0.08);
+      display: grid;
+      gap: 8px;
+    }
+
+    .pill{
+      appearance: none;
+      border: 1px solid var(--stroke);
+      background: rgba(255,255,255,0.08);
+      color: var(--text);
+      padding: 10px 10px;
+      border-radius: 999px;
+      font-weight: 900;
+      cursor: pointer;
+      user-select: none;
+      touch-action: manipulation;
+      font-size: 12px;
+    }
+    .pill:hover{
+      border-color: rgba(255,235,255,0.85);
+      background: rgba(255,255,255,0.12);
+    }
+
+    /* ========= MAIN PLAYER AREA ========= */
     .main{
       height: calc(100vh - 32px);
       border-radius: var(--radius);
       border: 1px solid var(--stroke);
-      background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.04));
+      background: linear-gradient(180deg, var(--panel), rgba(255,255,255,0.05));
       box-shadow: var(--shadow);
       overflow: hidden;
-      position: relative;
       display: grid;
       grid-template-rows: auto 1fr;
     }
 
     .topbar{
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--stroke);
+      background: rgba(0,0,0,0.10);
+      backdrop-filter: blur(10px);
+
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 12px;
-      padding: 14px 16px;
-      border-bottom: 1px solid var(--stroke);
-      background: rgba(0,0,0,0.12);
-      backdrop-filter: blur(10px);
     }
 
-    .nowplaying{
+    .now{
       display:flex;
       flex-direction: column;
       gap: 4px;
       min-width: 0;
     }
-    .nowplaying .label{
+    .now .k{
       font-size: 12px;
       color: var(--muted);
+      font-weight: 800;
+      letter-spacing: 0.2px;
     }
-    .nowplaying .value{
-      font-size: 14px;
-      font-weight: 700;
+    .now .v{
+      font-size: 15px;
+      font-weight: 900;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
       max-width: 70vw;
     }
 
-    .controls{
+    .mini-controls{
       display:flex;
       gap: 10px;
       align-items:center;
       flex-shrink: 0;
     }
 
-    .pill{
-      border: 1px solid var(--stroke);
-      background: rgba(255,255,255,0.06);
-      color: var(--text);
-      padding: 10px 12px;
-      border-radius: 999px;
-      font-weight: 700;
-      cursor: pointer;
-      user-select: none;
-      touch-action: manipulation;
-    }
-    .pill:hover{ background: rgba(255,255,255,0.10); border-color: var(--focus); }
-
-    /* Player box: keeps 16:9 and fills remaining space */
     .player-wrap{
       position: relative;
       padding: 16px;
@@ -184,54 +241,42 @@
     .player-frame{
       width: min(1120px, 100%);
       aspect-ratio: 16 / 9;
-      border-radius: 18px;
+      border-radius: 20px;
       overflow: hidden;
       border: 1px solid var(--stroke);
       background: rgba(0,0,0,0.35);
       position: relative;
+      box-shadow: 0 18px 55px rgba(0,0,0,0.45);
     }
 
-    /* Overlay (clean) */
     .overlay{
       position: absolute;
       inset: 0;
       pointer-events: none;
-      :root{
-  --bg: #1b0f2e;
-
-  /* Panels */
-  --panel: rgba(255,182,230,0.18);
-  --panel2: rgba(255,160,220,0.28);
-
-  /* Text */
-  --text: rgba(255,255,255,0.96);
-  --muted: rgba(255,230,245,0.80);
-
-  /* Accents */
-  --stroke: rgba(255,190,240,0.35);
-  --focus: rgba(255,210,255,0.65);
-
-  /* Effects */
-  --shadow: 0 22px 60px rgba(80,0,120,0.55);
-  --radius: 20px;
-}
+      background:
+        radial-gradient(300px 220px at 20% 18%, rgba(255,255,255,0.24), transparent 60%),
+        radial-gradient(320px 240px at 78% 25%, rgba(255,210,255,0.18), transparent 65%),
+        linear-gradient(180deg, rgba(255,170,235,0.16), rgba(120,60,200,0.24));
+      opacity: 0.58;
     }
 
-    /* Mobile: sidebar becomes top row */
+    /* Mobile: taskbar becomes top row (still no scrolling for 5 buttons) */
     @media (max-width: 860px){
-      body{ overflow: hidden; }
       .app{
         grid-template-columns: 1fr;
         grid-template-rows: auto 1fr;
       }
-      .sidebar{
+      .taskbar{
         height: auto;
+        grid-template-rows: auto auto auto;
       }
-      .btns{
-        grid-template-columns: repeat(2, 1fr);
+      .tb-buttons{
+        grid-template-columns: repeat(5, 1fr);
+        grid-template-rows: 1fr;
       }
+      .tb-label{ display:none; } /* cleaner on small screens */
       .main{
-        height: calc(100vh - 32px - 210px);
+        height: calc(100vh - 32px - 190px);
       }
     }
   </style>
@@ -239,25 +284,32 @@
 
 <body>
   <div class="app">
-    <aside class="sidebar">
-      <div class="sidebar-header">
-        <p class="title">Kids Player</p>
-        <p class="subtitle">Buttons are locked. Player is locked.</p>
+
+    <!-- Pinned Left Taskbar -->
+    <aside class="taskbar">
+      <div class="tb-header">
+        <div class="tb-badge">👑</div>
+        <p class="tb-title">Princess Player</p>
       </div>
 
-      <div class="btns" id="buttons"></div>
+      <div class="tb-buttons" id="buttons"></div>
+
+      <div class="tb-footer">
+        <button class="pill" id="btnHome">Home</button>
+      </div>
     </aside>
 
+    <!-- Main Player -->
     <main class="main">
       <div class="topbar">
-        <div class="nowplaying">
-          <div class="label">Now playing</div>
-          <div class="value" id="nowPlaying">Select a category</div>
+        <div class="now">
+          <div class="k">Now playing</div>
+          <div class="v" id="nowPlaying">Select a category</div>
         </div>
-        <div class="controls">
+
+        <div class="mini-controls">
           <button class="pill" id="btnPause">Pause</button>
           <button class="pill" id="btnPlay">Play</button>
-          <button class="pill" id="btnHome">Home</button>
         </div>
       </div>
 
@@ -268,52 +320,21 @@
         </div>
       </div>
     </main>
+
   </div>
 
   <!-- YouTube IFrame API -->
   <script src="https://www.youtube.com/iframe_api"></script>
 
   <script>
-    // === Your buttons & content ===
-    // NOTE:
-    // - Animals is a playlist ID
-    // - The others are single videos (from your links)
+    // === Buttons & Content ===
+    // Animals is a playlist ID; others are single video IDs from your links.
     const CONTENT = [
-      {
-        key: "animals",
-        label: "Animals",
-        icon: "🦁",
-        type: "playlist",
-        id: "PLNxd9fYeqXea4N3q7_Au1eovEWdQj1KJK"
-      },
-      {
-        key: "kidsbop",
-        label: "Kids Bop",
-        icon: "🎤",
-        type: "video",
-        id: "yzUKlvhlsyI"
-      },
-      {
-        key: "lullabies",
-        label: "Lullabies",
-        icon: "🌙",
-        type: "video",
-        id: "Ddf6UKyxDwo"
-      },
-      {
-        key: "music",
-        label: "Music",
-        icon: "🎵",
-        type: "video",
-        id: "d8S4VuWPYto"
-      },
-      {
-        key: "asmr",
-        label: "ASMR",
-        icon: "🤫",
-        type: "video",
-        id: "f63gAuLHnBo"
-      }
+      { key: "animals",  label: "Animals",   icon: "🦄", type: "playlist", id: "PLNxd9fYeqXea4N3q7_Au1eovEWdQj1KJK" },
+      { key: "kidsbop",  label: "Kids Bop",  icon: "🎀", type: "video",    id: "yzUKlvhlsyI" },
+      { key: "lullabies",label: "Lullabies", icon: "🌙", type: "video",    id: "Ddf6UKyxDwo" },
+      { key: "music",    label: "Music",     icon: "🎵", type: "video",    id: "d8S4VuWPYto" },
+      { key: "asmr",     label: "ASMR",      icon: "✨", type: "video",    id: "f63gAuLHnBo" }
     ];
 
     let player = null;
@@ -322,24 +343,23 @@
     const nowPlayingEl = document.getElementById("nowPlaying");
     const buttonsEl = document.getElementById("buttons");
 
-    function setNowPlaying(text){
-      nowPlayingEl.textContent = text;
-    }
+    function setNowPlaying(text){ nowPlayingEl.textContent = text; }
 
     function renderButtons(){
       buttonsEl.innerHTML = "";
       CONTENT.forEach(item => {
         const btn = document.createElement("button");
-        btn.className = "btn";
+        btn.className = "tb-btn";
         btn.type = "button";
         btn.dataset.key = item.key;
         btn.setAttribute("aria-pressed", "false");
 
-        const icon = document.createElement("span");
-        icon.className = "icon";
+        const icon = document.createElement("div");
+        icon.className = "tb-icon";
         icon.textContent = item.icon;
 
-        const label = document.createElement("span");
+        const label = document.createElement("div");
+        label.className = "tb-label";
         label.textContent = item.label;
 
         btn.appendChild(icon);
@@ -347,12 +367,12 @@
 
         btn.addEventListener("click", () => loadItem(item.key));
         buttonsEl.appendChild(btn);
-         });
+      });
     }
 
     function markActive(key){
       activeKey = key;
-      [...buttonsEl.querySelectorAll(".btn")].forEach(b => {
+      [...buttonsEl.querySelectorAll(".tb-btn")].forEach(b => {
         const on = b.dataset.key === key;
         b.setAttribute("aria-pressed", on ? "true" : "false");
       });
@@ -365,19 +385,6 @@
       markActive(key);
       setNowPlaying(item.label);
 
-      // Safer embed options; still not a perfect “walled garden”
-      // due to YouTube platform behavior.
-      const common = {
-        autoplay: 1,
-        controls: 1,
-        modestbranding: 1,
-        rel: 0,
-        fs: 0,
-        iv_load_policy: 3,
-        disablekb: 1,
-        playsinline: 1
-      };
-
       if(item.type === "playlist"){
         player.loadPlaylist({
           listType: "playlist",
@@ -389,14 +396,12 @@
       }
     }
 
-    // YouTube API callback
     function onYouTubeIframeAPIReady(){
       renderButtons();
 
       player = new YT.Player("player", {
         width: "100%",
         height: "100%",
-        videoId: CONTENT[0].type === "video" ? CONTENT[0].id : undefined,
         playerVars: {
           autoplay: 0,
           controls: 1,
@@ -408,23 +413,15 @@
           playsinline: 1
         },
         events: {
-          onReady: () => {
-            setNowPlaying("Select a category");
-          }
+          onReady: () => setNowPlaying("Select a category")
         }
       });
     }
-
-    // Make callback global
     window.onYouTubeIframeAPIReady = onYouTubeIframeAPIReady;
 
     // Controls
-    document.getElementById("btnPause").addEventListener("click", () => {
-      if(player) player.pauseVideo();
-    });
-    document.getElementById("btnPlay").addEventListener("click", () => {
-      if(player) player.playVideo();
-    });
+    document.getElementById("btnPause").addEventListener("click", () => player && player.pauseVideo());
+    document.getElementById("btnPlay").addEventListener("click", () => player && player.playVideo());
     document.getElementById("btnHome").addEventListener("click", () => {
       markActive(null);
       setNowPlaying("Select a category");
