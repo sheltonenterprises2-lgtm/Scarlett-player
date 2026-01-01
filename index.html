@@ -73,35 +73,30 @@
     }
 
     .btns{
-      padding: 12px;
-      display: grid;
-      gap: 10px;
-      overflow: auto; /* if you add more buttons later */
-    }
+  padding: 12px;
+  display: grid;
+  grid-template-rows: repeat(5, 1fr); /* one row per button */
+  gap: 10px;
+  height: 100%;
+  overflow: hidden; /* no scrolling */
+}
 
     .btn{
-      appearance: none;
-      border: 1px solid var(--stroke);
-      background: rgba(255,255,255,0.06);
-      color: var(--text);
-      padding: 14px 12px;
-      border-radius: 14px;
-      font-size: 15px;
-      font-weight: 700;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      transition: transform .08s ease, background .12s ease, border-color .12s ease;
-      user-select: none;
-      touch-action: manipulation;
-    }
-    .btn:hover{ background: rgba(255,255,255,0.10); border-color: var(--focus); }
-    .btn:active{ transform: scale(0.99); }
-    .btn[aria-pressed="true"]{
-      background: rgba(255,255,255,0.14);
-      border-color: rgba(255,255,255,0.24);
-    }
+  appearance: none;
+  border: 1px solid var(--stroke);
+  background: rgba(255,255,255,0.06);
+  color: var(--text);
+  padding: 12px;
+  border-radius: 14px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 100%; /* fills its grid row */
+  transition: transform .08s ease, background .12s ease, border-color .12s ease;
+}
 
     .icon{
       width: 38px;
@@ -201,12 +196,25 @@
       position: absolute;
       inset: 0;
       pointer-events: none;
-      background:
-        radial-gradient(600px 300px at 20% 10%, rgba(255,255,255,0.10), transparent 55%),
-        radial-gradient(700px 400px at 80% 15%, rgba(255,255,255,0.06), transparent 60%),
-        linear-gradient(180deg, rgba(0,0,0,0.25), rgba(0,0,0,0.35));
-      opacity: 0.30;
-      mix-blend-mode: screen;
+      :root{
+  --bg: #1b0f2e;
+
+  /* Panels */
+  --panel: rgba(255,182,230,0.18);
+  --panel2: rgba(255,160,220,0.28);
+
+  /* Text */
+  --text: rgba(255,255,255,0.96);
+  --muted: rgba(255,230,245,0.80);
+
+  /* Accents */
+  --stroke: rgba(255,190,240,0.35);
+  --focus: rgba(255,210,255,0.65);
+
+  /* Effects */
+  --shadow: 0 22px 60px rgba(80,0,120,0.55);
+  --radius: 20px;
+}
     }
 
     /* Mobile: sidebar becomes top row */
@@ -339,7 +347,7 @@
 
         btn.addEventListener("click", () => loadItem(item.key));
         buttonsEl.appendChild(btn);
-      });
+         });
     }
 
     function markActive(key){
